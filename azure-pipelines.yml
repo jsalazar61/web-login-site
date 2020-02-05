@@ -31,7 +31,7 @@ stages:
     - task: Docker@2
       displayName: Build and push an image to container registry
       inputs:
-        command: build
+        command: buildAndPush
         repository: $(imageRepository)
         dockerfile: $(dockerfilePath)
         tags: |
@@ -42,3 +42,9 @@ stages:
         azureSubscription: 'Azure subscription 1(22b51cb8-beb9-4802-8693-c9c9cbb4b767)'
         KeyVaultName: 'tenable-keys'
         SecretsFilter: '*'
+
+    - task: ShellScript@2
+      displayName: Assessing image for vulnerabilities
+      inputs:
+       scriptPath: tiocs-azure-on-prem-scanner.sh
+       args: '$(TIOACCESSKEY) $(TIOSECRETKEY) $(TIOJFROGPASS)'
